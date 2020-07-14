@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Three框架</title>
+        <script type="text/javascript" src="https://sitecdn.itouchtv.cn/sitecdn/cdn-lib/threejs/version_new/three.min.js"></script>
+        <script type="text/javascript" src="https://sitecdn.itouchtv.cn/sitecdn/cdn-lib/threejs/version_new/OrbitControls.js"></script>
+       <style type="text/css">
+            div#canvas-frame {
+                border: none;
+                cursor: pointer;
+                width: 100%;
+                height: 600px;
+                background-color: #EEEEEE;
+            }
+
+        </style>
+        <script>
+            var renderer;  // 渲染器
+            function initThree() {
+                width = window.innerWidth;  // 宽度
+                height = window.innerHeight;  // 长度
+                renderer = new THREE.WebGLRenderer({
+                    antialias : true  // 设置反锯齿
+                });
+                renderer.setSize(width, height);
+                document.getElementById('canvas-frame').appendChild(renderer.domElement);
+                renderer.setClearColor(0xFFFFFF, 1.0);
+            }
+
+            var camera;
+            function initCamera() {
+                camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 10, 1000 ); // 透视投影摄像机
+                // camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 10, 1000 );  // 正投影摄像机
+                camera.position.x = 0;  // 设置相机的坐标
+                camera.position.y = 0;
+                camera.position.z = 600;
+                camera.up.x = 0;
+                camera.up.y = 1;  // 设置相机的上为y轴方向
+                camera.up.z = 0;
+                camera.lookAt(0, 0, 0);  // 相机lookAt的点一定显示在屏幕的正中央：利用这点，我们可以实现物体移动时，我们可以一直跟踪物体，让物体永远在屏幕的中央
+
+            }
+
+            var scene;  // 创建场景
+            function initScene() {
+                scene = new THREE.Scene();
+            }
+
+            var light;  // 创建光源
+            function initLight() {
+                light = new THREE.AmbientLight(0xFF0000);  // 环境光源
+                light.position.set(100, 100, 200);
+                scene.add(light);
+
+                light = new THREE.PointLight(0x00FF00);  // 点光源
+                light.position.set(0, 0,300);
+                scene.add(light);
+            }
+
+            var cube;
+            function initObject() {
+                var geometry = new THREE.CylinderGeometry( 70,100,200);  // 创建几何体  宽度  长度  深度
+                var material = new THREE.MeshLambertMaterial( { color:0xFFFFFF} );  // 创建外表和设置颜色
+                var mesh = new THREE.Mesh( geometry,material);  // Mesh是一个类，用来生成物体
+                mesh.position = new THREE.Vector3(0,0,0);
+                scene.add(mesh);  // 加到场景
+            }
+
+            //用户交互插件 鼠标左键按住旋转，右键按住平移，滚轮缩放
+            function initControls() {
+                controls = new THREE.OrbitControls(camera, renderer.domElement);
+                // 如果使用animate方法时，将此函数删除
+                //controls.addEventListener( 'change', render );
+                // 使动画循环使用时阻尼或自转 意思是否有惯性
+                controls.enableDamping = true;
+                //动态阻尼系数 就是鼠标拖拽旋转灵敏度
+                //controls.dampingFactor = 0.25;
+                //是否可以缩放
+                controls.enableZoom = true;
+                //是否自动旋转
+                controls.autoRotate = true;
+                //设置相机距离原点的最远距离
+                controls.minDistance = 0;
+                //设置相机距离原点的最远距离
+                controls.maxDistance = 2000;
+                //是否开启右键拖拽
+                controls.enablePan = true;
+                controls.autoRotateSpeed = 5.0;
+            }
+
+            
+            // 初始化坐标轴辅助工具
+            function initAxesHelper() {
+                const AxesHelper = new THREE.AxesHelper(1500);
+                scene.add(AxesHelper);  // 添加到场景中
+            }
+
+            function threeStart() {
+                initThree();
+                initCamera();
+                initScene();
+                initLight();
+                initObject();
+                initControls();
+                initAxesHelper();
+                animation();
+
+            }
+            function animation()
+            {
+                changeFov();
+                controls.update();
+                renderer.render(scene, camera);
+                requestAnimationFrame(animation);  // 循环调用
+            }
+
+            function setCameraFov(fov)
+            {
+                camera.fov = fov;
+                camera.updateProjectionMatrix();
+            }
+
+            function changeFov()
+            {
+                var txtFov = document.getElementById("txtFov").value;
+                var val = parseFloat(txtFov);
+                setCameraFov(val);
+            }
+        </script>
+    </head>
+
+    <body onload="threeStart();">
+        <div id="canvas-frame"></div>
+        <div>
+            Fov:<input type="text" value="45" id="txtFov"/>(0到180的值)
+        </div>
+    </body>
+</html>

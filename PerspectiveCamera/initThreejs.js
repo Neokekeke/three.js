@@ -2,7 +2,7 @@
 // 变量
 let renderer;
 let scene; 
-let camera;
+let camera, camera2;
 let controls;
 let stats;
 let cube;
@@ -30,12 +30,20 @@ function initCamera() {
     const fov = 75;                                         // 相机视角度数45度视角    默认值：45
     const aspect = window.innerWidth / window.innerHeight;  // 渲染区域长宽比          默认值：window.innerWidth / window.innerHeight
     const near = 0.1;                                       // 相机看得最近的地方      默认值：0.1
-    const far = 1000;                                       // 相机看得最远的地方      默认值：1000
+    const far = 500;                                       // 相机看得最远的地方      默认值：1000
 
     camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    camera.position.set(0, 100, 150);
+    camera.position.set(100, 50, 200);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
-    camera.updateProjectionMatrix(); //相机更新
+
+    //正交投影照相机
+    camera2 = new THREE.OrthographicCamera(-10, 10, 10, -10, 10, 60);
+    camera2.position.set(0, 0, 30);
+    camera2.lookAt(new THREE.Vector3(0, 0, 0));
+
+    // 照相机位置显示器
+    const cameraHelper = new THREE.CameraHelper(camera2);
+    scene.add(cameraHelper);
 }
 
 // 初始化光源
@@ -54,7 +62,7 @@ function initLight() {
 
     // 聚光灯显示助手SpotLightHelper( light:灯光, color：颜色 )
     const lightHelper = new THREE.SpotLightHelper(light, 0xdfdfdf);
-    scene.add(lightHelper)
+    // scene.add(lightHelper)
 }
 
 // 初始化模型
@@ -63,7 +71,7 @@ function initModal() {
     const cubeGeometry = new THREE.CubeGeometry(10,10,10);
     const cubeMaterial = new THREE.MeshLambertMaterial({ color:0x00ffff });
     cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-    cube.position.set(-20,20,0);
+    cube.position.set(0, 0, -1.5);
     cube.castShadow = true;
 
     scene.add(cube);
@@ -82,11 +90,11 @@ function initControls() {
     //是否可以缩放
     controls.enableZoom = true;
     //是否自动旋转
-    controls.autoRotate = false;
-    //设置相机距离原点的最远距离
-    controls.minDistance = 50;
-    //设置相机距离原点的最远距离
-    controls.maxDistance = 200;
+    controls.autoRotate = true;
+    //缩放最小值
+    controls.minDistance = 30;
+    //缩放最大值
+    controls.maxDistance = 100;
     //是否开启右键拖拽
     controls.enablePan = true;
 }
@@ -115,7 +123,7 @@ function animate() {
 
     controls.update();
 
-    cube.rotation.y -= 0.01;
+    // cube.rotation.y -= 0.01;
 
     requestAnimationFrame(animate);
 }
@@ -124,34 +132,28 @@ function animate() {
 function initGui() {
     const gui = new dat.GUI();
     const cameraControls = new function () {
-        this.cameraType = "";
-
-        //  代码放入GUI工具中，可以在页面上动态切换相机
-        this.switchCamera = function (e) {
-            if (camera instanceof THREE.PerspectiveCamera) {
-                camera = new THREE.OrthographicCamera(window.innerWidth / 16, window.innerWidth / 16, window.innerHeight / 16, window.innerHeight / 16, 0.1, 1000);
-                camera.position.set(0, 40, 100);
-                camera.lookAt(new THREE.Vector3(0, 0, 0));
-
-                this.cameraType = "Orthographic";
-            } else {
-                camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-                camera.position.set(0, 40, 100);
-                camera.lookAt(new THREE.Vector3(0, 0, 0));
-
-                this.cameraType = "Perspective";
-            }
-            initControls()
-        }
+        this.left = -10;
+        this.right = 10;
+        this.top = 10;
+        this.bottom = -10;
     };
-    gui.add(cameraControls, 'switchCamera');
-    gui.add(cameraControls, 'cameraType').listen(); // 控制项调用 listen 方法，这样当我们改变数据时，也会同步到面板里。
-
+    gui.add(cameraControls, 'left', -10, 0).onChange(function(e) {
+        camera2.left = e;
+    });
+    gui.add(cameraControls, 'right', 10, 0).onChange(function(e) {
+        camera2.right = e;
+    });
+    gui.add(cameraControls, 'top', 10, 0).onChange(function(e) {
+        camera2.top = e;
+    });
+    gui.add(cameraControls, 'bottom', -10, 0).onChange(function(e) {
+        camera2.bottom = e;
+    });
 }
 
 // 初始化坐标轴辅助工具
 function initAxesHelper() {
-    const AxesHelper = new THREE.AxesHelper(150);
+    const AxesHelper = new THREE.AxesHelper(150); // 150代表轴线的长度
     scene.add(AxesHelper);  // 添加到场景中
 }
 
