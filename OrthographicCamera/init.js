@@ -5,7 +5,7 @@ let scene;
 let camera, camera2;
 let controls;
 let stats;
-let cube;
+let cube, cube2, cube3, cube5, cube6;
 let cameraHelper;
 
 
@@ -27,23 +27,24 @@ function initScene() {
 
 // 初始化相机
 function initCamera() {
-    const fov = 75;                                         // 相机视角度数45度视角    默认值：45
-    const aspect = window.innerWidth / window.innerHeight;  // 渲染区域长宽比          默认值：window.innerWidth / window.innerHeight
-    const near = 0.1;                                       // 相机看得最近的地方      默认值：0.1
-    const far = 500;                                       // 相机看得最远的地方      默认值：1000
+    const left = -1 * (window.innerWidth / 20);
+    const right = 1 * (window.innerWidth / 20);
+    const top = 1 * (window.innerHeight / 20);
+    const bottom = -1 * (window.innerHeight / 20);
+    const near = 1;
+    const far = 1000;
 
-    camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    camera.position.set(100, 50, 200);
+    camera = new THREE.OrthographicCamera(left, right, top, bottom, near, far);
+    camera.position.set(0, 200, 500);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-    //正交投影照相机
-    camera2 = new THREE.OrthographicCamera(-10, 10, 10, -10, 10, 60);
-    camera2.position.set(0, 0, 60);
-    camera2.lookAt(new THREE.Vector3(0, 0, 0));
+    // camera2 = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // camera2.position.set(0, 200, 500);
+    // camera2.lookAt(new THREE.Vector3(0, 0, 0));
 
     // 照相机位置显示器
-    const cameraHelper = new THREE.CameraHelper(camera2);
-    scene.add(cameraHelper);
+    // const cameraHelper = new THREE.CameraHelper(camera);
+    // scene.add(cameraHelper);
 }
 
 // 初始化光源
@@ -68,14 +69,41 @@ function initLight() {
 // 初始化模型
 function initModal() {
     // 正方体
-    const cubeGeometry = new THREE.CubeGeometry(10,10,10);
-    const cubeMaterial = new THREE.MeshLambertMaterial({ color:0x00ffff });
+    const cubeGeometry = new THREE.CubeGeometry(10,10,10);  // 创建的立方体
+    const cubeMaterial = new THREE.MeshLambertMaterial({ color:0x00ffff }); // 上色的材质
     cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-    cube.position.set(0, 0, -1.5);
+    cube.position.set(0, 0, 30);
     cube.castShadow = true;
 
-    scene.add(cube);
+    const cubeGeometry2 = new THREE.CubeGeometry(10,10,10);
+    const cubeMaterial2 = new THREE.MeshLambertMaterial({ color:0x00ffff }); // 上色的材质
+    cube2 = new THREE.Mesh(cubeGeometry2, cubeMaterial2);
+    cube2.position.set(0, 0, 10);
+    cube2.castShadow = true;
 
+    const cubeGeometry3 = new THREE.CubeGeometry(10,10,10);
+    const cubeMaterial3 = new THREE.MeshLambertMaterial({ color:0x00ffff }); // 上色的材质
+    cube3 = new THREE.Mesh(cubeGeometry3, cubeMaterial3);
+    cube3.position.set(0, 0, -10);
+    cube3.castShadow = true;
+
+    const cubeGeometry5 = new THREE.CubeGeometry(10,10,10);
+    const cubeMaterial5 = new THREE.MeshLambertMaterial({ color:0x00ffff }); // 上色的材质
+    cube5 = new THREE.Mesh(cubeGeometry5, cubeMaterial5);
+    cube5.position.set(0, 0, -30);
+    cube5.castShadow = true;
+
+    const cubeGeometry6 = new THREE.CubeGeometry(10,10,10);
+    const cubeMaterial6 = new THREE.MeshLambertMaterial({ color:0x00ffff }); // 上色的材质
+    cube6 = new THREE.Mesh(cubeGeometry6, cubeMaterial6);
+    cube6.position.set(0, 0, -50);
+    cube6.castShadow = true;
+
+    scene.add(cube);
+    scene.add(cube2);
+    scene.add(cube3);
+    scene.add(cube5);
+    scene.add(cube6);
 }
 
 //用户交互插件 鼠标左键按住旋转，右键按住平移，滚轮缩放
@@ -123,8 +151,6 @@ function animate() {
 
     controls.update();
 
-    // cube.rotation.y -= 0.01;
-
     requestAnimationFrame(animate);
 }
 
@@ -132,28 +158,28 @@ function animate() {
 function initGui() {
     const gui = new dat.GUI();
     const cameraControls = new function () {
-        this.left = -10;
-        this.right = 10;
-        this.top = 10;
-        this.bottom = -10;
+        this.zPos = 500;
+        this.near = 0.1;
+        this.far = 1000;
     };
-    gui.add(cameraControls, 'left', -10, 0).onChange(function(e) {
-        camera2.left = e;
+
+    gui.add(cameraControls, 'near', 0.1, 100).onChange(function(e) {
+        camera.near = e;
+        camera.updateProjectionMatrix();
     });
-    gui.add(cameraControls, 'right', 10, 0).onChange(function(e) {
-        camera2.right = e;
+    gui.add(cameraControls, 'far', 0, 1000).onChange(function(e) {
+        camera.far = e;
+        camera.updateProjectionMatrix();
     });
-    gui.add(cameraControls, 'top', 10, 0).onChange(function(e) {
-        camera2.top = e;
-    });
-    gui.add(cameraControls, 'bottom', -10, 0).onChange(function(e) {
-        camera2.bottom = e;
+    gui.add(cameraControls, 'zPos', 200, 1000).onChange(function(e) {
+        camera.position.set(0, 200, e);
+        camera.lookAt(new THREE.Vector3(0,0,0));
     });
 }
 
 // 初始化坐标轴辅助工具
 function initAxesHelper() {
-    const AxesHelper = new THREE.AxesHelper(150); // 150代表轴线的长度
+    const AxesHelper = new THREE.AxesHelper(1500); // 150代表轴线的长度
     scene.add(AxesHelper);  // 添加到场景中
 }
 
