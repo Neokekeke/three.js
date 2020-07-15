@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Three.js中光源</title>
+    <link href="./index.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script type="text/javascript" src="https://sitecdn.itouchtv.cn/sitecdn/cdn-lib/threejs/version_new/three.min.js"></script>
+    <script type="text/javascript" src="https://sitecdn.itouchtv.cn/sitecdn/cdn-lib/threejs/version_new/STLLoader.js"></script>
+    <script type="text/javascript" src="https://sitecdn.itouchtv.cn/sitecdn/cdn-lib/threejs/version_new/OrbitControls.js"></script>
+    <script type="text/javascript" src="https://sitecdn.itouchtv.cn/sitecdn/cdn-lib/threejs/version_new/stats.min.js"></script>
+    <script type="text/javascript" src="https://sitecdn.itouchtv.cn/sitecdn/cdn-lib/threejs/version_new/dat.gui.min.js"></script>
+</head>
+<body>
+	<ul>
+          <li data-type="PointLight" class="on">点光源</li>
+          <li data-type="SpotLight">聚光灯光源</li>
+          <li data-type="DirectionalLight">平行光源</li>
+	  	  <li data-type="AmbientLight">环境光源</li>
+	</ul>
+	<div id="canvas"></div>
+</body>
+<script src="init.js"></script>
+</html>
