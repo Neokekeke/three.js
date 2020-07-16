@@ -14,7 +14,7 @@ function initRenderer() {
     renderer = new THREE.WebGLRenderer({
         antialias: true // antialias属性：抗锯齿效果为设置有效
     });
-    renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.setPixelRatio(window.devicePixelRatio); // 避免canvas的物理像素和css设置的逻辑像素不一样导致场景拉伸
     renderer.setSize(window.innerWidth, window.innerHeight); // canvas 的大小
     document.body.appendChild(renderer.domElement);
 }
@@ -36,7 +36,7 @@ function initCamera() {
 
     console.log('aaaaa', left, right, top, bottom)
     camera = new THREE.OrthographicCamera(left, right, top, bottom, near, far);
-    camera.position.set(0, 200, 500);
+    camera.position.set(0, 100, 200);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     // camera2 = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -121,9 +121,9 @@ function initControls() {
     //是否自动旋转
     controls.autoRotate = false;
     //缩放最小值
-    controls.minDistance = 30;
+    controls.minDistance = 0;
     //缩放最大值
-    controls.maxDistance = 100;
+    controls.maxDistance = 500;
     //是否开启右键拖拽
     controls.enablePan = true;
 }
@@ -139,7 +139,6 @@ function onWindowResize() {
     camera.updateProjectionMatrix();
     render();
     renderer.setSize(window.innerWidth, window.innerHeight);
-
 }
 
 // 开始执行动画
@@ -159,7 +158,7 @@ function animate() {
 function initGui() {
     const gui = new dat.GUI();
     const cameraControls = new function () {
-        this.zPos = 500;
+        this.zPos = 200;
         this.near = 0.1;
         this.far = 1000;
     };
@@ -172,8 +171,8 @@ function initGui() {
         camera.far = e;
         camera.updateProjectionMatrix();
     });
-    gui.add(cameraControls, 'zPos', 200, 1000).onChange(function(e) {
-        camera.position.set(0, 200, e);
+    gui.add(cameraControls, 'zPos', 200, 500).onChange(function(e) {
+        camera.position.set(0, 100, e);
         camera.lookAt(new THREE.Vector3(0,0,0));
     });
 }

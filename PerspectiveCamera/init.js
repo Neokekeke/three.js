@@ -8,7 +8,7 @@ let stats;
 let cube, cube2, cube3, cube5, cube6;
 let cameraHelper;
 
-let fov = 45, aspect = window.innerWidth / window.innerHeight, near = 0.1, far = 1000, zPos = 500;
+let fov = 45, aspect = window.innerWidth / window.innerHeight, near = 0.1, far = 1000, zPos = 200;
 
 
 
@@ -17,7 +17,7 @@ function initRenderer() {
     renderer = new THREE.WebGLRenderer({
         antialias: true // antialias属性：抗锯齿效果为设置有效
     });
-    renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.setPixelRatio(window.devicePixelRatio); // // 避免canvas的物理像素和css设置的逻辑像素不一样导致场景拉伸
     renderer.setSize(window.innerWidth, window.innerHeight); // canvas 的大小
     document.body.appendChild(renderer.domElement);
 }
@@ -31,7 +31,7 @@ function initScene() {
 // 初始化相机
 function initCamera() {                              
     camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    camera.position.set(0, 200, zPos);
+    camera.position.set(0, 100, zPos);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 }
 
@@ -108,9 +108,9 @@ function initControls() {
     //是否自动旋转
     controls.autoRotate = false;
     //缩放最小值
-    controls.minDistance = 30;
+    controls.minDistance = 0;
     //缩放最大值
-    controls.maxDistance = 100;
+    controls.maxDistance = 500;
     //是否开启右键拖拽
     controls.enablePan = true;
 }
@@ -149,7 +149,7 @@ function initGui() {
         this.fov = 45;
         this.near = 0.1;
         this.far = 1000;
-        this.zPos = 500
+        this.zPos = 200
     };
     gui.add(cameraControls, 'fov', 10, 180).onChange(function(e) {
         camera.fov = e;
@@ -159,12 +159,12 @@ function initGui() {
         camera.near = e;
         camera.updateProjectionMatrix();
     });;
-    gui.add(cameraControls, 'far', 0, 1000).onChange(function(e) {
+    gui.add(cameraControls, 'far', 0, 500).onChange(function(e) {
         camera.far = e;
         camera.updateProjectionMatrix();
     });;
-    gui.add(cameraControls, 'zPos', 200, 1000).onChange(function(e) {
-        camera.position.set(0, 200, e);
+    gui.add(cameraControls, 'zPos', 200, 500).onChange(function(e) {
+        camera.position.set(0, 100, e);
         camera.lookAt(new THREE.Vector3(0, 0, 0));
     }).name('z轴');
 }
