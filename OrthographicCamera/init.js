@@ -34,6 +34,7 @@ function initCamera() {
     const near = 1;
     const far = 1000;
 
+    console.log('aaaaa', left, right, top, bottom)
     camera = new THREE.OrthographicCamera(left, right, top, bottom, near, far);
     camera.position.set(0, 200, 500);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
