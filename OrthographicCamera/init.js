@@ -34,7 +34,6 @@ function initCamera() {
     const near = 1;
     const far = 1000;
 
-    console.log('aaaaa', left, right, top, bottom)
     camera = new THREE.OrthographicCamera(left, right, top, bottom, near, far);
     camera.position.set(0, 100, 200);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -174,6 +173,7 @@ function initGui() {
     gui.add(cameraControls, 'zPos', 200, 500).onChange(function(e) {
         camera.position.set(0, 100, e);
         camera.lookAt(new THREE.Vector3(0,0,0));
+        console.log(e)
     });
 }
 
