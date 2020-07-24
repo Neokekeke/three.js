@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>canvas Demo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript">
+            function drawDiagonal(id){
+                var canvas=document.getElementById(id);
+                var context=canvas.getContext("2d");
+                context.beginPath();
+                context.moveTo(0,0);
+                context.lineTo(100,100);
+                context.stroke();
+
+                context.strokeRect(50,50,100,100);
+            }
+
+            window.onload=function(){
+                drawDiagonal("diagonal1");
+                drawDiagonal("diagonal2");
+                drawDiagonal("diagonal3");
+            }
+
+            console.log('(tag)', window.devicePixelRatio)
+    </script>
+</head>
+<body>
+    <canvas id="diagonal1" style="border:1px solid;" width="100" height="100"></canvas>
+    <canvas id="diagonal2" style="border:1px solid; width:200px; height:200px;" width="300" height="300"></canvas>
+    <!--默认canvas的宽高300*150-->
+    <canvas id="diagonal3" style="border:1px solid; width:200px; height:200px;"></canvas>
+</body>
+</html>

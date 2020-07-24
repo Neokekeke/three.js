@@ -44,15 +44,19 @@ var renderer, camera, scene, gui, stats;
     function initGui() {
         //声明一个保存需求修改的相关数据的对象
         gui = {
-            auto: false, //自动旋转
+            rotate: false, //自动旋转
             reset: function () {
+                if (this.rotate) {
+                    this.rotate = false;
+                }
                 group.rotation.y = 0;
+                dataGui.reset();
             }
         };
 
         var datGui = new dat.GUI();
         //将设置属性添加到gui当中，gui.add(对象，属性，最小值，最大值）
-        datGui.add(gui, "auto").name("自动旋转");
+        datGui.add(gui, "rotate").name("自动旋转元素");
         datGui.add(gui, "reset").name("重置");
     }
 
@@ -84,11 +88,11 @@ var renderer, camera, scene, gui, stats;
 
         group = new THREE.Group(); //创建一个模型组
 
-        //球体
-        var sphereGeometry = new THREE.SphereGeometry(5, 24, 16);
-        var sphereMaterial = new THREE.MeshPhongMaterial({color: 0xff00ff});
+        //圆柱体
+        var CylinderGeometry = new THREE.CylinderGeometry(5, 5, 10, 10);
+        var sphereMaterial = new THREE.MeshPhongMaterial({color: 0x00ffff});
 
-        var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        var sphere = new THREE.Mesh(CylinderGeometry, sphereMaterial);
 
         sphere.position.x = -10;
         sphere.position.z = -10;
@@ -133,14 +137,16 @@ var renderer, camera, scene, gui, stats;
 
     function render() {
 
-        if (gui.auto) {
-            group.rotation.y += 0.01;
+        if (gui.rotate) {
+            group.rotation.y -= 0.01;
         }
 
         renderer.clear(true, true, true); //手动清除场景
 
         var size = renderer.getSize(); //获取到当前的显示区域的宽高
 
+        // 这里是设置了两个相机一个矩形渲染范围
+        // renderer.setViewport()方法可以实现在一个canvas画布上面不同区域分别执行.render()输出渲染结果。
         renderer.setViewport(0, 0, size.width / 2, size.height); //设置视口，从 (x, y) 到 (x + width, y + height)。
         renderer.render(scene, perspectiveCamera);
 
@@ -185,8 +191,8 @@ var renderer, camera, scene, gui, stats;
         initLight();
         initModel();
         initStats();
-        const AxesHelper = new THREE.AxesHelper(150);
-        scene.add(AxesHelper);  // 添加到场景中
+        // const AxesHelper = new THREE.AxesHelper(150);
+        // scene.add(AxesHelper);  // 添加到场景中
 
         animate();
         window.onresize = onWindowResize;
